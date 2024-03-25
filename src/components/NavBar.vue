@@ -1,0 +1,15 @@
+<script setup>
+// Comp para usar en todas las vistas de home(dashboard) y taskCreatioView para navegar por la aplicacion
+
+// De momento esto está a pincho en App.vue y tiene un bug: cuando estoy en home me aparece remarcado en verde Create Tasks, y cuando estoy en Create Task me aparece en verde la Home
+
+</script>
+
+<template>
+	<main>
+		<h1>Navbar Comp!</h1>
+	</main>
+</template>
+
+<style scoped>
+</style>
