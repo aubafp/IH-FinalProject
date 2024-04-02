@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { fetchActualUser, createNewUser, logIn } from '@/api/userApi'
+import { fetchActualUser, createNewUser, logIn, logOutFromExistingUser } from '@/api/userApi'
 
 export const useUserStore = defineStore('user', {
   state: () => {
