@@ -37,6 +37,14 @@ export const useUserStore = defineStore('user', {
       }
     }
 
+    async function signOut() {
+      try {
+        user.value = await logOutFromExistingUser()
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
     return {
       // State
       user,
@@ -44,7 +52,8 @@ export const useUserStore = defineStore('user', {
       // Actions
       fetchUser,
       signUp,
-      signIn
+      signIn,
+      signOut
     }
   },
   persist: {
