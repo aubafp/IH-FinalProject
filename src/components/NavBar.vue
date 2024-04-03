@@ -6,9 +6,14 @@
 </script>
 
 <template>
-	<main>
-		<h1>Navbar Comp!</h1>
-	</main>
+	<header>
+		<div class="wrapper">
+			<nav>
+				<RouterLink to="/">Home</RouterLink>
+				<RouterLink to="/taskCreation">Create Task</RouterLink>
+			</nav>
+		</div>
+	</header>
 </template>
 
 <style scoped>
