@@ -28,7 +28,9 @@ const signUp = () => {
 			<input type="password" v-model="password" />
 		</label>
 
-		<button @click="signIn">Sign In</button>
+		<v-btn @click="signIn">Sign In</v-btn>
+
+		<br><br>
 
 		<h1>Sign Up View!</h1>
 		<label>
@@ -40,7 +42,7 @@ const signUp = () => {
 			<input type="password" v-model="password" />
 		</label>
 
-		<button @click="signUp">Sign Up</button>
+		<v-btn @click="signUp">Sign Up</v-btn>
 
 
 	</main>

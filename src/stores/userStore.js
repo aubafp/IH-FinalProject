@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { fetchActualUser, createNewUser, logIn } from '@/api/userApi'
+import { fetchActualUser, createNewUser, logIn, logOutFromExistingUser } from '@/api/userApi'
 
 export const useUserStore = defineStore('user', {
   state: () => {
@@ -37,6 +37,14 @@ export const useUserStore = defineStore('user', {
       }
     }
 
+    async function signOut() {
+      try {
+        user.value = await logOutFromExistingUser()
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
     return {
       // State
       user,
@@ -44,7 +52,8 @@ export const useUserStore = defineStore('user', {
       // Actions
       fetchUser,
       signUp,
-      signIn
+      signIn,
+      signOut
     }
   },
   persist: {

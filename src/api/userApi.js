@@ -27,3 +27,14 @@ export const authExistentUser = async (email, password) => {
 
   return user
 }
+
+export const logOutFromExistingUser = async () => {
+  const { error } = await supabase.auth.signOut()
+
+  if (error) {
+    throw new Error(error.message)
+  }
+
+  return null
+}
+
