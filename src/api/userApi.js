@@ -15,7 +15,7 @@ export const createNewUser = async (email, password) => {
   return data
 }
 
-export const logIn = async (email, password) => {
+export const authExistentUser = async (email, password) => {
   const {
     data: { user },
     error
