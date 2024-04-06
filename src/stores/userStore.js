@@ -23,7 +23,7 @@ export const useUserStore = defineStore('user', {
 
     async function signUp(email, password) {
       try {
-        user.value = await createNewUser(email, password)
+        await createNewUser(email, password)
       } catch (error) {
         console.error(error)
       }

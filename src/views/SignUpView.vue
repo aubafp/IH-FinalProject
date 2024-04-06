@@ -28,6 +28,7 @@
 <script setup>
 	import { ref, computed } from 'vue';
 	import { useUserStore } from '@/stores/userStore'
+	import { useRouter } from 'vue-router'
 
 
 	const user = ref('')
@@ -36,9 +37,17 @@
 
 
 	const userStore = useUserStore()
+	const router = useRouter()
 
-	const signUp = () => {
-		userStore.signUp(user.value, password.value)
+	const signUp = async () => {
+	try {
+		await userStore.signUp(user.value, password.value)
+		router.push({
+			name: 'MailVerifView',
+		})
+	} catch (err) {
+		console.error(err)
+	}
 	}
 
 	const userRules = computed(() => {
