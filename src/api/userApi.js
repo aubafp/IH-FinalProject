@@ -15,7 +15,7 @@ export const createNewUser = async (email, password) => {
   return data
 }
 
-export const logIn = async (email, password) => {
+export const authExistentUser = async (email, password) => {
   const {
     data: { user },
     error
@@ -27,3 +27,14 @@ export const logIn = async (email, password) => {
 
   return user
 }
+
+export const logOutFromExistingUser = async () => {
+  const { error } = await supabase.auth.signOut()
+
+  if (error) {
+    throw new Error(error.message)
+  }
+
+  return null
+}
+
