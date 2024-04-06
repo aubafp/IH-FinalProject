@@ -6,7 +6,6 @@ export const useUserStore = defineStore('user', {
   state: () => {
     // State
     const user = ref(undefined)
-    const errorMsj = ref(undefined)
 
     // Getters
 
@@ -31,13 +30,7 @@ export const useUserStore = defineStore('user', {
     }
 
     async function signIn(email, password) {
-      try {
-        errorMsj.value = undefined
-        user.value = await authExistentUser(email, password)
-      } catch (error) {
-        errorMsj.value = error
-        console.error(errorMsj.value)
-      }
+      user.value = await authExistentUser(email, password)
     }
 
     async function signOut() {
@@ -51,7 +44,6 @@ export const useUserStore = defineStore('user', {
     return {
       // State
       user,
-      errorMsj,
       // Getters
       // Actions
       fetchUser,

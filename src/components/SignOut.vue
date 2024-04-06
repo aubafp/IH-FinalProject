@@ -32,12 +32,19 @@
 
 <script setup>
 	import { useUserStore } from '@/stores/userStore'
+	import { useRouter } from 'vue-router'
 
 	const userStore = useUserStore()
+	const router = useRouter()
 
-	const signOut = () => {
-		userStore.signOut()
-	}
+	const signOut = async () => {
+		try {
+			await userStore.signOut();
+		router.push({ name: 'SignInView' });
+		} catch (error) {
+			console.error('Error during sign-out:', error);
+		}
+	};
 
 </script>
 
