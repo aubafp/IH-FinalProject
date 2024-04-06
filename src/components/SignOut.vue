@@ -1,13 +1,45 @@
-<script setup>
-// Comp para usar en la vista de dashboard para poner un boton para hacer logout
-// A considerar si creo otro componente para el mensaje de confirmacion o como lo hago?
-</script>
-
 <template>
-	<main>
-		<h1>SignOut Comp!</h1>
-	</main>
+	<v-dialog max-width="500">
+		<template v-slot:activator="{ props: activatorProps }">
+		<v-btn
+			v-bind="activatorProps"
+		>Sign Out</v-btn>
+		</template>
+
+		<template v-slot:default="{ isActive }">
+		<v-card title="Dialog">
+			<v-card-text>
+			You are going to logout. Do you want to continue?
+			</v-card-text>
+
+			<v-card-actions>
+			<v-spacer></v-spacer>
+
+			<v-btn
+				text="Cancel"
+				@click="isActive.value = false"
+			></v-btn>
+			<v-btn
+				text="Continue"
+				@click="signOut"
+			></v-btn>
+
+			</v-card-actions>
+		</v-card>
+		</template>
+	</v-dialog>
 </template>
+
+<script setup>
+	import { useUserStore } from '@/stores/userStore'
+
+	const userStore = useUserStore()
+
+	const signOut = () => {
+		userStore.signOut()
+	}
+
+</script>
 
 <style scoped>
 </style>

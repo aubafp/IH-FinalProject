@@ -1,7 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DashboardView from '@/views/DashboardView.vue'
-import AuthView from '@/views/AuthView.vue'
 import TaskCreationView from '@/views/TaskCreationView.vue'
+import SignInView from '@/views/SignInView.vue'
+import SignUpView from '@/views/SignUpView.vue'
+
 
 import { useUserStore } from '@/stores/userStore'
 
@@ -14,14 +16,19 @@ const router = createRouter({
       component: DashboardView
     },
     {
-      path: '/authentication',
-      name: 'AuthView',
-      component: AuthView
-    },
-    {
       path: '/taskCreation',
       name: 'TaskCreationView',
       component: TaskCreationView
+    },
+    {
+      path: '/signIn',
+      name: 'SignInView',
+      component: SignInView
+    },
+    {
+      path: '/signUp',
+      name: 'SignUpView',
+      component: SignUpView
     }
   ]
 })
@@ -33,8 +40,8 @@ router.beforeEach(async (to, from, next) => {
     await userStore.fetchUser()
   }
 
-  if (userStore.user === null && to.name !== 'AuthView') {
-    next({ name: 'AuthView' })
+  if (userStore.user === null && to.name !== 'SignUpView' && to.name !== 'SignInView') {
+    next({ name: 'SignUpView' })
   } else {
     next()
   }
