@@ -19,3 +19,37 @@ export const createTask = async (task) => {
   }
   return true
 }
+
+
+export const editTask = async (taskId, newName) => {
+  const { error } = await supabase
+    .from(TABLE_NAME)
+    .update({ title: newName })
+    .eq('id', taskId)
+  if (error) {
+    throw new Error(error.message)
+  }
+  return true
+}
+
+export const changeStatus = async (taskId, newStatus) => {
+  const { error } = await supabase
+    .from(TABLE_NAME)
+    .update({ is_complete: newStatus })
+    .eq('id', taskId)
+  if (error) {
+    throw new Error(error.message)
+  }
+  return true
+}
+
+export const deleteTask = async (taskId) => {
+  const { error } = await supabase
+    .from(TABLE_NAME)
+    .delete()
+    .eq('id', taskId)
+  if (error) {
+    throw new Error(error.message)
+  }
+  return true
+}
