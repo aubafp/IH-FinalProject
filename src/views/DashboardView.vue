@@ -49,7 +49,7 @@
 
 	const newTaskTitle = ref('')
 
-	const idTaskToEdit = ref('')
+	const idTaskToEdit = ref('') // esto deberia hacerlo dinamico sin necesitar un input wtf nose como
 	const titleTaskToEdit = ref('')
 
 	const addTask = async () => {

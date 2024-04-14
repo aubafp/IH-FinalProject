@@ -9,14 +9,14 @@
 	</main>
 	<v-data-table
 	  :headers="headers"
-	  :items="desserts"
-	  :sort-by="[{ key: 'calories', order: 'asc' }]"
+	  :items="medicines"
+	  :sort-by="[{ key: 'hour', order: 'desc' }]"
 	>
 	  <template v-slot:top>
 		<v-toolbar
 		  flat
 		>
-		  <v-toolbar-title>My CRUD</v-toolbar-title>
+		  <v-toolbar-title>Medicines</v-toolbar-title>
 		  <v-divider
 			class="mx-4"
 			inset
@@ -34,7 +34,7 @@
 				dark
 				v-bind="props"
 			  >
-				New Item
+				New
 			  </v-btn>
 			</template>
 			<v-card>
@@ -52,7 +52,7 @@
 					>
 					  <v-text-field
 						v-model="editedItem.name"
-						label="Dessert name"
+						label="Medicine name"
 					  ></v-text-field>
 					</v-col>
 					<v-col
@@ -61,8 +61,8 @@
 					  sm="6"
 					>
 					  <v-text-field
-						v-model="editedItem.calories"
-						label="Calories"
+						v-model="editedItem.dosis"
+						label="Dosis"
 					  ></v-text-field>
 					</v-col>
 					<v-col
@@ -71,28 +71,8 @@
 					  sm="6"
 					>
 					  <v-text-field
-						v-model="editedItem.fat"
-						label="Fat (g)"
-					  ></v-text-field>
-					</v-col>
-					<v-col
-					  cols="12"
-					  md="4"
-					  sm="6"
-					>
-					  <v-text-field
-						v-model="editedItem.carbs"
-						label="Carbs (g)"
-					  ></v-text-field>
-					</v-col>
-					<v-col
-					  cols="12"
-					  md="4"
-					  sm="6"
-					>
-					  <v-text-field
-						v-model="editedItem.protein"
-						label="Protein (g)"
+						v-model="editedItem.hour"
+						label="Hour"
 					  ></v-text-field>
 					</v-col>
 				  </v-row>
@@ -120,11 +100,11 @@
 		  </v-dialog>
 		  <v-dialog v-model="dialogDelete" max-width="500px">
 			<v-card>
-			  <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
+			  <v-card-title class="text-h5">Confirm deletion</v-card-title>
 			  <v-card-actions>
 				<v-spacer></v-spacer>
 				<v-btn color="blue-darken-1" variant="text" @click="closeDelete">Cancel</v-btn>
-				<v-btn color="blue-darken-1" variant="text" @click="deleteItemConfirm">OK</v-btn>
+				<v-btn color="blue-darken-1" variant="text" @click="deleteItemConfirm">Ok</v-btn>
 				<v-spacer></v-spacer>
 			  </v-card-actions>
 			</v-card>
@@ -161,32 +141,39 @@
 <script setup>
 	// Imports
 	import HeaderNav from '@/components/HeaderNav.vue';
-	import { ref, computed, watch } from 'vue';
+	import { ref, computed, watch, onMounted } from 'vue';
+	import { useTasksStore } from '@/stores/tasksStore';
+	import { useUserStore } from '@/stores/userStore';
+
+	import { storeToRefs } from 'pinia';
+
+
 
 	// Datos reactivos
+
+	const tasksStore = useTasksStore();
+	const { tasks } = storeToRefs(tasksStore)
+
+	const userStore = useUserStore()
+
+
 	const dialog = ref(false);
 	const dialogDelete = ref(false);
 	const editedIndex = ref(-1);
 	const editedItem = ref({
 		name: '',
-		calories: 0,
-		fat: 0,
-		carbs: 0,
-		protein: 0,
+		dosis: '',
+		hour: ''
 	});
 	const defaultItem = {
 		name: '',
-		calories: 0,
-		fat: 0,
-		carbs: 0,
-		protein: 0,
+		dosis: '',
+		hour: ''
 	};
 	const headers = [
-		{ title: 'Dessert (100g serving)', align: 'start', sortable: false, key: 'name' },
-		{ title: 'Calories', key: 'calories' },
-		{ title: 'Fat (g)', key: 'fat' },
-		{ title: 'Carbs (g)', key: 'carbs' },
-		{ title: 'Protein (g)', key: 'protein' },
+		{ title: 'Name', align: 'start', sortable: true, key: 'name' },
+		{ title: 'Dosis', sortable: false, key: 'dosis' },
+		{ title: 'Hour', sortable: true, key: 'hour' },
 		{ title: 'Actions', key: 'actions', sortable: false },
 	];
 
@@ -194,41 +181,37 @@
 	const formTitle = computed(() => editedIndex.value === -1 ? 'New Item' : 'Edit Item');
 
 	// Datos
-	const desserts = ref([]);
+	const medicines = ref([]);
 
 	// Inicialización de datos
 	const initialize = () => {
-		desserts.value = [
-			{ name: 'Frozen Yogurt', calories: 159, fat: 6.0, carbs: 24, protein: 4.0 },
-			{ name: 'Ice cream sandwich', calories: 237, fat: 9.0, carbs: 37, protein: 4.3 },
-			{ name: 'Eclair', calories: 262, fat: 16.0, carbs: 23, protein: 6.0 },
-			{ name: 'Cupcake', calories: 305, fat: 3.7, carbs: 67, protein: 4.3 },
-			{ name: 'Gingerbread', calories: 356, fat: 16.0, carbs: 49, protein: 3.9 },
-			{ name: 'Jelly bean', calories: 375, fat: 0.0, carbs: 94, protein: 0.0 },
-			{ name: 'Lollipop', calories: 392, fat: 0.2, carbs: 98, protein: 0 },
-			{ name: 'Honeycomb', calories: 408, fat: 3.2, carbs: 87, protein: 6.5 },
-			{ name: 'Donut', calories: 452, fat: 25.0, carbs: 51, protein: 4.9 },
-			{ name: 'KitKat', calories: 518, fat: 26.0, carbs: 65, protein: 7 },
+		medicines.value = [
+			{ name: 'Paracetamol', dosis: '1g', hour: '8:00am'},
+			{ name: 'Paracetamol', dosis: '1g', hour: '16:00pm' },
+			{ name: 'Paracetamol', dosis: '1g', hour: '00:00am' },
+			{ name: 'Ibuprofeno', dosis: '600mg', hour: '8:00am'},
+			{ name: 'Ibuprofeno', dosis: '600mg', hour: '16:00pm' },
+			{ name: 'Ibuprofeno', dosis: '600mg', hour: '00:00am' },
 		];
 	};
 
 	initialize();
 
-	// Métodos
+	// Métodos para manipular UI
 	const editItem = (item) => {
-		editedIndex.value = desserts.value.indexOf(item);
+		editedIndex.value = medicines.value.indexOf(item);
 		editedItem.value = { ...item };
 		dialog.value = true;
 	};
 
 	const deleteItem = (item) => {
-		editedIndex.value = desserts.value.indexOf(item);
+		editedIndex.value = medicines.value.indexOf(item);
 		editedItem.value = { ...item };
 		dialogDelete.value = true;
 	};
 
 	const deleteItemConfirm = () => {
-		desserts.value.splice(editedIndex.value, 1);
+		medicines.value.splice(editedIndex.value, 1);
 		closeDelete();
 	};
 
@@ -246,12 +229,16 @@
 
 	const save = () => {
 		if (editedIndex.value > -1) {
-			Object.assign(desserts.value[editedIndex.value], editedItem.value);
+			Object.assign(medicines.value[editedIndex.value], editedItem.value);
 		} else {
-			desserts.value.push(editedItem.value);
+			medicines.value.push(editedItem.value);
 		}
 		close();
 	};
+
+	// Métodos para manipular la BBDD
+	// Pendiente copypaste y reformular
+
 
 	// Watchers
 	watch(dialog, (val) => {
