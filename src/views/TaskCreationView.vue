@@ -158,179 +158,111 @@
   </template>
 
 
-<script>
-	import HeaderNav from '@/components/HeaderNav.vue'
-export default {
-	data: () => ({
-	dialog: false,
-	dialogDelete: false,
-	headers: [
-		{
-		title: 'Dessert (100g serving)',
-		align: 'start',
-		sortable: false,
-		key: 'name',
-		},
+<script setup>
+	// Imports
+	import HeaderNav from '@/components/HeaderNav.vue';
+	import { ref, computed, watch } from 'vue';
+
+	// Datos reactivos
+	const dialog = ref(false);
+	const dialogDelete = ref(false);
+	const editedIndex = ref(-1);
+	const editedItem = ref({
+		name: '',
+		calories: 0,
+		fat: 0,
+		carbs: 0,
+		protein: 0,
+	});
+	const defaultItem = {
+		name: '',
+		calories: 0,
+		fat: 0,
+		carbs: 0,
+		protein: 0,
+	};
+	const headers = [
+		{ title: 'Dessert (100g serving)', align: 'start', sortable: false, key: 'name' },
 		{ title: 'Calories', key: 'calories' },
 		{ title: 'Fat (g)', key: 'fat' },
 		{ title: 'Carbs (g)', key: 'carbs' },
 		{ title: 'Protein (g)', key: 'protein' },
 		{ title: 'Actions', key: 'actions', sortable: false },
-	],
-	desserts: [],
-	editedIndex: -1,
-	editedItem: {
-		name: '',
-		calories: 0,
-		fat: 0,
-		carbs: 0,
-		protein: 0,
-	},
-	defaultItem: {
-		name: '',
-		calories: 0,
-		fat: 0,
-		carbs: 0,
-		protein: 0,
-	},
-	}),
+	];
 
-	computed: {
-	formTitle () {
-		return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
-	},
-	},
+	// Computados
+	const formTitle = computed(() => editedIndex.value === -1 ? 'New Item' : 'Edit Item');
 
-	watch: {
-	dialog (val) {
-		val || this.close()
-	},
-	dialogDelete (val) {
-		val || this.closeDelete()
-	},
-	},
+	// Datos
+	const desserts = ref([]);
 
-	created () {
-	this.initialize()
-	},
+	// Inicialización de datos
+	const initialize = () => {
+		desserts.value = [
+			{ name: 'Frozen Yogurt', calories: 159, fat: 6.0, carbs: 24, protein: 4.0 },
+			{ name: 'Ice cream sandwich', calories: 237, fat: 9.0, carbs: 37, protein: 4.3 },
+			{ name: 'Eclair', calories: 262, fat: 16.0, carbs: 23, protein: 6.0 },
+			{ name: 'Cupcake', calories: 305, fat: 3.7, carbs: 67, protein: 4.3 },
+			{ name: 'Gingerbread', calories: 356, fat: 16.0, carbs: 49, protein: 3.9 },
+			{ name: 'Jelly bean', calories: 375, fat: 0.0, carbs: 94, protein: 0.0 },
+			{ name: 'Lollipop', calories: 392, fat: 0.2, carbs: 98, protein: 0 },
+			{ name: 'Honeycomb', calories: 408, fat: 3.2, carbs: 87, protein: 6.5 },
+			{ name: 'Donut', calories: 452, fat: 25.0, carbs: 51, protein: 4.9 },
+			{ name: 'KitKat', calories: 518, fat: 26.0, carbs: 65, protein: 7 },
+		];
+	};
 
-	methods: {
-	initialize () {
-		this.desserts = [
-		{
-			name: 'Frozen Yogurt',
-			calories: 159,
-			fat: 6.0,
-			carbs: 24,
-			protein: 4.0,
-		},
-		{
-			name: 'Ice cream sandwich',
-			calories: 237,
-			fat: 9.0,
-			carbs: 37,
-			protein: 4.3,
-		},
-		{
-			name: 'Eclair',
-			calories: 262,
-			fat: 16.0,
-			carbs: 23,
-			protein: 6.0,
-		},
-		{
-			name: 'Cupcake',
-			calories: 305,
-			fat: 3.7,
-			carbs: 67,
-			protein: 4.3,
-		},
-		{
-			name: 'Gingerbread',
-			calories: 356,
-			fat: 16.0,
-			carbs: 49,
-			protein: 3.9,
-		},
-		{
-			name: 'Jelly bean',
-			calories: 375,
-			fat: 0.0,
-			carbs: 94,
-			protein: 0.0,
-		},
-		{
-			name: 'Lollipop',
-			calories: 392,
-			fat: 0.2,
-			carbs: 98,
-			protein: 0,
-		},
-		{
-			name: 'Honeycomb',
-			calories: 408,
-			fat: 3.2,
-			carbs: 87,
-			protein: 6.5,
-		},
-		{
-			name: 'Donut',
-			calories: 452,
-			fat: 25.0,
-			carbs: 51,
-			protein: 4.9,
-		},
-		{
-			name: 'KitKat',
-			calories: 518,
-			fat: 26.0,
-			carbs: 65,
-			protein: 7,
-		},
-		]
-	},
+	initialize();
 
-	editItem (item) {
-		this.editedIndex = this.desserts.indexOf(item)
-		this.editedItem = Object.assign({}, item)
-		this.dialog = true
-	},
+	// Métodos
+	const editItem = (item) => {
+		editedIndex.value = desserts.value.indexOf(item);
+		editedItem.value = { ...item };
+		dialog.value = true;
+	};
 
-	deleteItem (item) {
-		this.editedIndex = this.desserts.indexOf(item)
-		this.editedItem = Object.assign({}, item)
-		this.dialogDelete = true
-	},
+	const deleteItem = (item) => {
+		editedIndex.value = desserts.value.indexOf(item);
+		editedItem.value = { ...item };
+		dialogDelete.value = true;
+	};
 
-	deleteItemConfirm () {
-		this.desserts.splice(this.editedIndex, 1)
-		this.closeDelete()
-	},
+	const deleteItemConfirm = () => {
+		desserts.value.splice(editedIndex.value, 1);
+		closeDelete();
+	};
 
-	close () {
-		this.dialog = false
-		this.$nextTick(() => {
-		this.editedItem = Object.assign({}, this.defaultItem)
-		this.editedIndex = -1
-		})
-	},
+	const close = () => {
+		dialog.value = false;
+		editedItem.value = { ...defaultItem };
+		editedIndex.value = -1;
+	};
 
-	closeDelete () {
-		this.dialogDelete = false
-		this.$nextTick(() => {
-		this.editedItem = Object.assign({}, this.defaultItem)
-		this.editedIndex = -1
-		})
-	},
+	const closeDelete = () => {
+		dialogDelete.value = false;
+		editedItem.value = { ...defaultItem };
+		editedIndex.value = -1;
+	};
 
-	save () {
-		if (this.editedIndex > -1) {
-		Object.assign(this.desserts[this.editedIndex], this.editedItem)
+	const save = () => {
+		if (editedIndex.value > -1) {
+			Object.assign(desserts.value[editedIndex.value], editedItem.value);
 		} else {
-		this.desserts.push(this.editedItem)
+			desserts.value.push(editedItem.value);
 		}
-		this.close()
-	},
-	},
-}
+		close();
+	};
+
+	// Watchers
+	watch(dialog, (val) => {
+		if (!val) {
+			close();
+		}
+	});
+
+	watch(dialogDelete, (val) => {
+		if (!val) {
+			closeDelete();
+		}
+	});
 </script>
