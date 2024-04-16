@@ -2,8 +2,8 @@
 	<header>
 		<div class="wrapper">
 			<nav>
-				<RouterLink to="/">Home</RouterLink>
-				<RouterLink to="/taskCreation">Create Task</RouterLink>
+				<!-- <RouterLink to="/">Home</RouterLink>
+				<RouterLink to="/taskCreation">Create Task</RouterLink> -->
 				<SignOut></SignOut>
 			</nav>
 			
@@ -22,7 +22,9 @@
 <style scoped>
 nav {
 	display: flex;
-	justify-content: space-between;
+	justify-content: flex-end;
+	padding: 1rem 2rem;
+	
 	gap: 20px;
 }
 </style>

@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import DashboardView from '@/views/DashboardView.vue'
-import TaskCreationView from '@/views/TaskCreationView.vue'
+import HomeView from '@/views/HomeView.vue'
 import SignInView from '@/views/SignInView.vue'
 import SignUpView from '@/views/SignUpView.vue'
 
@@ -13,13 +12,8 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'DashboardView',
-      component: DashboardView
-    },
-    {
-      path: '/taskCreation',
-      name: 'TaskCreationView',
-      component: TaskCreationView
+      name: 'HomeView',
+      component: HomeView
     },
     {
       path: '/signIn',
@@ -50,7 +44,7 @@ router.beforeEach(async (to, from, next) => {
   if (userStore.user === null && (to.name !== 'SignUpView' && to.name !== 'SignInView' && to.name !== 'MailVerifView')) {
     next({ name: 'SignInView' })
   } else if (userStore.user !== null && (to.name === 'SignUpView' || to.name === 'SignInView' || to.name === 'MailVerifView')) {
-    next({ name: 'DashboardView' });
+    next({ name: 'HomeView' });
   } else {
     next()
   }

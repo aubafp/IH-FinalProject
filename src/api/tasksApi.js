@@ -21,10 +21,11 @@ export const createTask = async (task) => {
 }
 
 
-export const editTask = async (taskId, newName) => {
+export const editTask = async (taskId, {title, dosis, hour}) => {
+  
   const { error } = await supabase
     .from(TABLE_NAME)
-    .update({ title: newName })
+    .update({title, dosis, hour})
     .eq('id', taskId)
   if (error) {
     throw new Error(error.message)

@@ -3,7 +3,9 @@
 		<template v-slot:activator="{ props: activatorProps }">
 		<v-btn
 			v-bind="activatorProps"
-		>Sign Out</v-btn>
+		>
+			<v-icon icon="mdi-logout" />
+		</v-btn>
 		</template>
 
 		<template v-slot:default="{ isActive }">

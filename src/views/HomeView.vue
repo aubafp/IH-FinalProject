@@ -4,12 +4,12 @@
 		<HeaderNav></HeaderNav>
 	</header>
 	<main>
-		<h1>Task Creation View!</h1>
+		<h1>Home View!</h1>
 		<br><br>
 	</main>
 	<v-data-table
 	  :headers="headers"
-	  :items="medicines"
+	  :items="tasks"
 	  :sort-by="[{ key: 'hour', order: 'desc' }]"
 	>
 	  <template v-slot:top>
@@ -33,6 +33,7 @@
 				color="primary"
 				dark
 				v-bind="props"
+				@click="formTitle = 'New Item';"
 			  >
 				New
 			  </v-btn>
@@ -51,7 +52,7 @@
 					  sm="6"
 					>
 					  <v-text-field
-						v-model="editedItem.name"
+						v-model="editedItem.title"
 						label="Medicine name"
 					  ></v-text-field>
 					</v-col>
@@ -116,20 +117,25 @@
 		  class="me-2"
 		  size="small"
 		  @click="editItem(item)"
-		>
-		  mdi-pencil
-		</v-icon>
+		  icon="mdi-pencil" 
+		/>
 		<v-icon
 		  size="small"
 		  @click="deleteItem(item)"
-		>
-		  mdi-delete
-		</v-icon>
+		  icon="mdi-delete"
+		 />
 	  </template>
+	  <template v-slot:item.is_complete="{ item }">
+		
+      <v-checkbox
+        v-model="item.is_complete"
+		@update:modelValue="updateIsComplete(item)"
+      ></v-checkbox>
+    </template>
 	  <template v-slot:no-data>
 		<v-btn
 		  color="primary"
-		  @click="initialize"
+		  @click="tasksStore.fetchTasks()"
 		>
 		  Reset
 		</v-btn>
@@ -147,8 +153,6 @@
 
 	import { storeToRefs } from 'pinia';
 
-
-
 	// Datos reactivos
 
 	const tasksStore = useTasksStore();
@@ -161,57 +165,62 @@
 	const dialogDelete = ref(false);
 	const editedIndex = ref(-1);
 	const editedItem = ref({
-		name: '',
+		title: '',
 		dosis: '',
-		hour: ''
+		hour: '',
+		id: "",
 	});
 	const defaultItem = {
-		name: '',
+		title: '',
 		dosis: '',
-		hour: ''
+		hour: '',
 	};
 	const headers = [
-		{ title: 'Name', align: 'start', sortable: true, key: 'name' },
+		{ title: 'Name', align: 'start', sortable: true, key: 'title' },
 		{ title: 'Dosis', sortable: false, key: 'dosis' },
 		{ title: 'Hour', sortable: true, key: 'hour' },
 		{ title: 'Actions', key: 'actions', sortable: false },
+		{ title: '', key: 'is_complete', sortable: false },
 	];
 
 	// Computados
-	const formTitle = computed(() => editedIndex.value === -1 ? 'New Item' : 'Edit Item');
+	//const formTitle = computed(() => editedIndex.value === -1 ? 'New Item' : 'Edit Item');
+	const formTitle = ref("");
 
 	// Datos
-	const medicines = ref([]);
+	
+	// // Inicialización de datos
+	// const initialize = () => {
+	// 	medicines.value = [
+	// 		{ name: 'Paracetamol', dosis: '1g', hour: '8:00am'},
+	// 		{ name: 'Paracetamol', dosis: '1g', hour: '16:00pm' },
+	// 		{ name: 'Paracetamol', dosis: '1g', hour: '00:00am' },
+	// 		{ name: 'Ibuprofeno', dosis: '600mg', hour: '8:00am'},
+	// 		{ name: 'Ibuprofeno', dosis: '600mg', hour: '16:00pm' },
+	// 		{ name: 'Ibuprofeno', dosis: '600mg', hour: '00:00am' },
+	// 	];
+	// };
 
-	// Inicialización de datos
-	const initialize = () => {
-		medicines.value = [
-			{ name: 'Paracetamol', dosis: '1g', hour: '8:00am'},
-			{ name: 'Paracetamol', dosis: '1g', hour: '16:00pm' },
-			{ name: 'Paracetamol', dosis: '1g', hour: '00:00am' },
-			{ name: 'Ibuprofeno', dosis: '600mg', hour: '8:00am'},
-			{ name: 'Ibuprofeno', dosis: '600mg', hour: '16:00pm' },
-			{ name: 'Ibuprofeno', dosis: '600mg', hour: '00:00am' },
-		];
-	};
-
-	initialize();
+	// initialize();
 
 	// Métodos para manipular UI
 	const editItem = (item) => {
-		editedIndex.value = medicines.value.indexOf(item);
+		formTitle.value = 'Edit Item';
 		editedItem.value = { ...item };
 		dialog.value = true;
 	};
 
-	const deleteItem = (item) => {
-		editedIndex.value = medicines.value.indexOf(item);
+	const itemToBeDeletedID = ref(undefined);
+	const deleteItem = async (item) => {
 		editedItem.value = { ...item };
+		itemToBeDeletedID.value = item.id;
 		dialogDelete.value = true;
 	};
 
-	const deleteItemConfirm = () => {
-		medicines.value.splice(editedIndex.value, 1);
+	const deleteItemConfirm = async () => {
+		await tasksStore.deleteExistingTask(itemToBeDeletedID.value);
+		itemToBeDeletedID.value = undefined;
+		tasksStore.fetchTasks();
 		closeDelete();
 	};
 
@@ -227,12 +236,23 @@
 		editedIndex.value = -1;
 	};
 
-	const save = () => {
-		if (editedIndex.value > -1) {
-			Object.assign(medicines.value[editedIndex.value], editedItem.value);
-		} else {
-			medicines.value.push(editedItem.value);
+	const updateIsComplete = async (item) => {
+		console.info("updateIsComplete", {item})
+		await tasksStore.editTaskStatus(item.id, item.is_complete);
+		tasksStore.fetchTasks();
+	}
+
+	const save = async () => {
+		const isEditing = formTitle.value === "Edit Item";
+		if (!isEditing) {
+			await tasksStore.createNewTask({...editedItem.value, id: undefined, is_complete: false, user_id: userStore.user.id});
+			tasksStore.fetchTasks();
+			return close();
 		}
+
+		await tasksStore.editExistingTask(editedItem.value.id, editedItem.value);
+		tasksStore.fetchTasks();
+
 		close();
 	};
 
@@ -252,4 +272,8 @@
 			closeDelete();
 		}
 	});
+
+	onMounted(() => {
+		tasksStore.fetchTasks()
+	})
 </script>
