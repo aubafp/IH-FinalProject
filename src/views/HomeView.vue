@@ -3,10 +3,6 @@
 	<header>
 		<HeaderNav></HeaderNav>
 	</header>
-	<main>
-		<h1>Home View!</h1>
-		<br><br>
-	</main>
 	<v-data-table
 	  :headers="headers"
 	  :items="tasks"
@@ -54,6 +50,7 @@
 					  <v-text-field
 						v-model="editedItem.title"
 						label="Medicine name"
+						:rules="titleRules"
 					  ></v-text-field>
 					</v-col>
 					<v-col
@@ -64,6 +61,7 @@
 					  <v-text-field
 						v-model="editedItem.dosis"
 						label="Dosis"
+						:rules="dosisRules"
 					  ></v-text-field>
 					</v-col>
 					<v-col
@@ -74,6 +72,8 @@
 					  <v-text-field
 						v-model="editedItem.hour"
 						label="Hour"
+						type="time"
+						:rules="hourRules"
 					  ></v-text-field>
 					</v-col>
 				  </v-row>
@@ -83,15 +83,15 @@
 			  <v-card-actions>
 				<v-spacer></v-spacer>
 				<v-btn
-				  color="blue-darken-1"
+				  color="error"
 				  variant="text"
 				  @click="close"
 				>
 				  Cancel
 				</v-btn>
 				<v-btn
-				  color="blue-darken-1"
 				  variant="text"
+				  :disabled="validEditedItem"
 				  @click="save"
 				>
 				  Save
@@ -104,8 +104,8 @@
 			  <v-card-title class="text-h5">Confirm deletion</v-card-title>
 			  <v-card-actions>
 				<v-spacer></v-spacer>
-				<v-btn color="blue-darken-1" variant="text" @click="closeDelete">Cancel</v-btn>
-				<v-btn color="blue-darken-1" variant="text" @click="deleteItemConfirm">Ok</v-btn>
+				<v-btn variant="text" @click="closeDelete">Cancel</v-btn>
+				<v-btn color="error" variant="text" @click="deleteItemConfirm">Delete</v-btn>
 				<v-spacer></v-spacer>
 			  </v-card-actions>
 			</v-card>
@@ -122,6 +122,7 @@
 		<v-icon
 		  size="small"
 		  @click="deleteItem(item)"
+		  color="error"
 		  icon="mdi-delete"
 		 />
 	  </template>
@@ -153,6 +154,8 @@
 
 	import { storeToRefs } from 'pinia';
 
+	import {z } from "zod";
+
 	// Datos reactivos
 
 	const tasksStore = useTasksStore();
@@ -171,9 +174,9 @@
 		id: "",
 	});
 	const defaultItem = {
-		title: '',
-		dosis: '',
-		hour: '',
+		title: undefined,
+		dosis: undefined,
+		hour: undefined,
 	};
 	const headers = [
 		{ title: 'Name', align: 'start', sortable: true, key: 'title' },
@@ -183,27 +186,51 @@
 		{ title: '', key: 'is_complete', sortable: false },
 	];
 
-	// Computados
-	//const formTitle = computed(() => editedIndex.value === -1 ? 'New Item' : 'Edit Item');
 	const formTitle = ref("");
 
-	// Datos
-	
-	// // Inicialización de datos
-	// const initialize = () => {
-	// 	medicines.value = [
-	// 		{ name: 'Paracetamol', dosis: '1g', hour: '8:00am'},
-	// 		{ name: 'Paracetamol', dosis: '1g', hour: '16:00pm' },
-	// 		{ name: 'Paracetamol', dosis: '1g', hour: '00:00am' },
-	// 		{ name: 'Ibuprofeno', dosis: '600mg', hour: '8:00am'},
-	// 		{ name: 'Ibuprofeno', dosis: '600mg', hour: '16:00pm' },
-	// 		{ name: 'Ibuprofeno', dosis: '600mg', hour: '00:00am' },
-	// 	];
-	// };
+	// Validacion de campos
+	const validEditedItem = computed(()=> {
+		const schema = z.object({
+			title: z.string().min(3, "Minimum 3 characters"),
+			dosis: z.string().min(0).refine(value => !!+value, "Must be a valid number greater than 0"),
+			hour: z.string().min(0, "Must be a valid hour")
+		})
 
-	// initialize();
+		const shouldDisable = !schema.safeParse(editedItem.value).success
+		return  shouldDisable;
+	})
 
-	// Métodos para manipular UI
+
+	const titleRules = computed(() => {
+		const titleSchena = z.string().min(3, "Minimum 3 characters")
+		return [
+			(value) => {
+				const validation = titleSchena.safeParse(value);
+				return validation.success || validation.error.issues[0].message;
+			}
+		]
+	})
+	const dosisRules = computed(() => {
+		const dosisSchena = z.string().min(0).refine(value => !!+value, "Must be a valid number greater than 0")
+		return [
+			(value) => {
+				const validation = dosisSchena.safeParse(value);
+				
+				return validation.success || validation.error.issues[0].message;
+			}
+		]
+	})
+	const hourRules = computed(() => {
+		const hourSchena = z.string().min(0, "Must be a valid hour")
+		return [
+			(value) => {
+				const validation = hourSchena.safeParse(value);
+				return validation.success || validation.error.issues[0].message;
+			}
+		]
+	})
+
+	// Métodos para manipular UI + API
 	const editItem = (item) => {
 		formTitle.value = 'Edit Item';
 		editedItem.value = { ...item };
@@ -237,7 +264,6 @@
 	};
 
 	const updateIsComplete = async (item) => {
-		console.info("updateIsComplete", {item})
 		await tasksStore.editTaskStatus(item.id, item.is_complete);
 		tasksStore.fetchTasks();
 	}
@@ -255,10 +281,6 @@
 
 		close();
 	};
-
-	// Métodos para manipular la BBDD
-	// Pendiente copypaste y reformular
-
 
 	// Watchers
 	watch(dialog, (val) => {

@@ -25,9 +25,9 @@ export const useTasksStore = defineStore('tasks', () => {
     }
   }
 
-  async function editExistingTask(taskId, newName) {
+  async function editExistingTask(taskId, newValue) {
     try {
-      await editTask(taskId, newName)
+      await editTask(taskId, newValue)
     } catch (error) {
       console.error(error)
     }

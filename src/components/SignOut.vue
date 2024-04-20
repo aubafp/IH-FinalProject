@@ -4,7 +4,7 @@
 		<v-btn
 			v-bind="activatorProps"
 		>
-			<v-icon icon="mdi-logout" />
+			<v-icon icon="mdi-logout" color="primary" />
 		</v-btn>
 		</template>
 
@@ -20,6 +20,7 @@
 			<v-btn
 				text="Cancel"
 				@click="isActive.value = false"
+				color="error"
 			></v-btn>
 			<v-btn
 				text="Continue"

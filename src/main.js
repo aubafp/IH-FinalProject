@@ -12,6 +12,9 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import { aliases, mdi } from 'vuetify/iconsets/mdi';
 
+
+import themes from "./theme";
+
 import './assets/main.css'
 import '@mdi/font/css/materialdesignicons.css'
 
@@ -31,6 +34,10 @@ const vuetify = createVuetify({
       mdi,
     },
   },
+   theme: {
+      defaultTheme: "light",
+      themes: {light: themes.light}
+   }
 })
 
 // Create app

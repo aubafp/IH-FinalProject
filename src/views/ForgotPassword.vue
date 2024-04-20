@@ -1,23 +1,9 @@
 <template>
-  <h1 class="text-h4">Sign In</h1>
-  <v-sheet class="mx-auto">
-    <v-form @submit.prevent>
-      <v-text-field v-model="user" :rules="rules" label="Email"></v-text-field>
-      <v-text-field
-        type="password"
-        v-model="password"
-        :rules="rules"
-        label="Password"
-      ></v-text-field>
-      <v-btn @click="signIn" class="mt-2" type="submit" block>Sign In</v-btn>
-    </v-form>
-  </v-sheet>
-  <p class="text-body-1">Do not have an account? <RouterLink to="/signUp">Sign Up</RouterLink></p>
-  <p class="text-body-1"><RouterLink to="/forgotPassword">Forgot password?</RouterLink></p>
-  
-  <v-alert v-if="errorMsj" title="Sign In Error" type="error">{{
-    errorMsj
-  }}</v-alert>
+  <section>
+    <h1 class="text-h4">Forgot Password</h1>
+    <h2 style="text-align: center;">TODO</h2>
+    
+</section>
 </template>
 
 <script setup>

@@ -17,7 +17,8 @@
     "pinia-plugin-persist": "^1.0.0",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0",
-    "vuetify": "^3.5.14"
+    "vuetify": "^3.5.14",
+    "zod": "^3.22.5"
   },
   "devDependencies": {
     "@mdi/font": "^7.4.47",

@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import SignInView from '@/views/SignInView.vue'
 import SignUpView from '@/views/SignUpView.vue'
+import ForgotPassword from '@/views/ForgotPassword.vue'
 
 import { useUserStore } from '@/stores/userStore'
 import MailVerifView from '@/views/MailVerifView.vue'
@@ -26,6 +27,11 @@ const router = createRouter({
       component: SignUpView
     },
     {
+      path: '/forgotPassword',
+      name: 'ForgotPassword',
+      component: ForgotPassword
+    },
+    {
       path: '/mailVerification',
       name: 'MailVerifView',
       component: MailVerifView
@@ -40,10 +46,10 @@ router.beforeEach(async (to, from, next) => {
   if (userStore.user === undefined) {
     await userStore.fetchUser()
   }
-
-  if (userStore.user === null && (to.name !== 'SignUpView' && to.name !== 'SignInView' && to.name !== 'MailVerifView')) {
+  const unathenticatedRoutes = ['SignUpView', "SignInView", "MailVerifView", "ForgotPassword"]
+  if (userStore.user === null && (!unathenticatedRoutes.includes(to.name))) {
     next({ name: 'SignInView' })
-  } else if (userStore.user !== null && (to.name === 'SignUpView' || to.name === 'SignInView' || to.name === 'MailVerifView')) {
+  } else if (userStore.user !== null && (unathenticatedRoutes.includes(to.name))) {
     next({ name: 'HomeView' });
   } else {
     next()
