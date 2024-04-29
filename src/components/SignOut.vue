@@ -20,13 +20,12 @@
 			<v-btn
 				text="Cancel"
 				@click="isActive.value = false"
-				color="error"
 			></v-btn>
 			<v-btn
 				text="Continue"
 				@click="signOut"
+				color="error"
 			></v-btn>
-
 			</v-card-actions>
 		</v-card>
 		</template>

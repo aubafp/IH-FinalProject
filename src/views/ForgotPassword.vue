@@ -1,7 +1,7 @@
 <template>
   <section>
     <h1 class="text-h4">Forgot Password</h1>
-    <h2 style="text-align: center;">TODO</h2>
+    <h2 style="text-align: center;">Under development....</h2>
     
 </section>
 </template>

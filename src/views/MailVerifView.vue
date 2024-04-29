@@ -2,7 +2,7 @@
     <v-alert title="Mail Verification" type="info">
       Please, check your inbox and validate your email to be able to Sign In.
     </v-alert>
-    <p class="text-body-1">Already verified?<RouterLink to="/signIn">Sign In</RouterLink></p>
+    <p class="text-body-1">Already verified? <RouterLink to="/signIn">Sign In</RouterLink></p>
 </template>
   
 <script setup>

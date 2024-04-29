@@ -22,7 +22,7 @@
 		<v-btn @click="signUp" class="mt-2" type="submit" block>Sign Up</v-btn>
 	</v-form>
 	</v-sheet>
-	<p class="text-body-1">Already have an account?<RouterLink to="/signIn">Sign In</RouterLink></p>
+	<p class="text-body-1">Already have an account? <RouterLink to="/signIn">Sign In</RouterLink></p>
 </template>
 
 <script setup>

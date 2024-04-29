@@ -13,7 +13,7 @@
     </v-form>
   </v-sheet>
   <p class="text-body-1">Do not have an account? <RouterLink to="/signUp">Sign Up</RouterLink></p>
-  <p class="text-body-1"><RouterLink to="/forgotPassword">Forgot password?</RouterLink></p>
+  <!-- Forgot pass will be developed in the next iteration: <p class="text-body-1"><RouterLink to="/forgotPassword">Forgot password?</RouterLink></p> -->
   
   <v-alert v-if="errorMsj" title="Sign In Error" type="error">{{
     errorMsj
