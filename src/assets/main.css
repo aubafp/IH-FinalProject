@@ -1,0 +1,10 @@
+@import './base.css';
+
+a {
+  text-decoration: none;
+}
+
+body #app {
+  max-width: 80rem;
+  margin: 0 auto;
+}
